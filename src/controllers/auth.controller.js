@@ -13,6 +13,15 @@ router.post('/api/signup', async (req, res) => {
         });
     }
 
+    const userDB = await User.findOne({username, email});
+
+    if (userDB) {
+        return res.status(400).json({
+            auth: false,
+            message: 'El email ya ha sido registrado'
+        })
+    }
+
     const user = new User({
         username,
         email,
@@ -23,7 +32,10 @@ router.post('/api/signup', async (req, res) => {
 
     await user.save();
 
-    res.status(201).json({auth: true});
+    res.status(201).json({
+        auth: true,
+        message: 'Se registró correctamente'
+    });
 });
 
 router.post('/api/signin', async (req, res) => {
